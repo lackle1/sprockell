@@ -2,7 +2,7 @@
 
 module Sprockell.Sprockell where
 
-import Data.Bits
+import Data.Bits ((.&.), (.|.), shiftL, shiftR, xor)
 
 import Sprockell.BasicFunctions
 import Sprockell.HardwareTypes
