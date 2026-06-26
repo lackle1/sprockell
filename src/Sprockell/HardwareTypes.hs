@@ -28,6 +28,7 @@ type SprID      = Value
 data AddrImmDI  = ImmValue Int                                  -- ImmValue n:is just the constant value n
                 | DirAddr MemAddr                               -- DirAddr a: a is an address in memory (local or shared)
                 | IndAddr RegAddr                               -- IndAddr p: p is a register, the content of this register is an address inmemory
+                | AddrLabel String                              -- AddrLabel s: s is the name of the label. Will be replaced by `ImmValue {value of label}`
                 deriving (Eq,Show,Read)
 
 type LocalMem   = Sequence.Seq Value
@@ -134,6 +135,9 @@ data Instruction = Compute Operator RegAddr RegAddr RegAddr     -- Compute op r0
                                                                 -- Store r (IndAddr p): ibid, memory address contained in register p
                                                                 -- Store r (ImmValue n): undefined
 
+                 | SetLabel String                              -- SetLabel s: Creates a label with the value of the current line.
+                                                                --      Removes this instruction afterwards.
+
                  | Push RegAddr                                 -- Push r: put the value from register r on the stack
                  | Pop RegAddr                                  -- Pop r : put the top of the stack in register r
                                                                 --         and adapts the stack pointer
@@ -163,6 +167,7 @@ data Instruction = Compute Operator RegAddr RegAddr RegAddr     -- Compute op r0
 data Target     = Abs CodeAddr                                  -- Abs n: instruction n
                 | Rel CodeAddr                                  -- Rel n: increase current program counter with n
                 | Ind RegAddr                                   -- Ind r: value of new program counter is in register r
+                | TargetLabel String                            -- TargetLabel s: s is the name of the label. Will be replaced by `Abs {value of label}`
                 deriving (Eq,Show,Read)
 
 data TargetCode = NoJump                                        -- code to indicate in machine code how to jump
